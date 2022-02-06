@@ -43,7 +43,7 @@ public class ItemController {
 
     @GetMapping("/search")
     public ResponseEntity<?> getItemsByField(@RequestParam("title") String title) {
-        List<Item> itemList = itemrepository.findAllByTitle(title);
+        List<Item> itemList = itemrepository.findItemsByRegexpTitle(title);
         if (!itemList.isEmpty()) {
             return new ResponseEntity<>(itemList, HttpStatus.OK);
         } else {
