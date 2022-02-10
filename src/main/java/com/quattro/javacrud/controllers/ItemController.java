@@ -1,6 +1,8 @@
 package com.quattro.javacrud.controllers;
 
 import com.quattro.javacrud.models.Item;
+import com.quattro.javacrud.models.UpdateDetails;
+import com.quattro.javacrud.payload.request.ItemRequest;
 import com.quattro.javacrud.repository.Itemrepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,15 +55,15 @@ public class ItemController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> insertItem(@Valid @RequestBody Item item){
-        itemrepository.save(item);
+    public ResponseEntity<?> insertItem(@Valid @RequestBody ItemRequest itemRequest){
+        itemrepository.save(new Item(itemRequest));
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @PutMapping("/")
-    public ResponseEntity<Item> updateItem(@RequestBody Item item) {
-        if (item.getId() != null) {
-            return new ResponseEntity<>(itemrepository.save(item), HttpStatus.OK);
+    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest) {
+        if (itemRequest.getId() != null) {
+            return new ResponseEntity<>(itemrepository.save(new Item(itemRequest,Instant.now())), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

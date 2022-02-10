@@ -1,7 +1,12 @@
 package com.quattro.javacrud.models;
 
+import com.quattro.javacrud.payload.request.ItemRequest;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(collection = "items")
 public class Item {
@@ -13,11 +18,24 @@ public class Item {
 
     private String description;
 
+    private Instant createdDate;
+
     private String userId;
 
-    public Item(String title, String description) {
-        this.title = title;
-        this.description = description;
+    private List<UpdateDetails> updateDetails = new ArrayList<>();
+
+    public Item(ItemRequest request) {
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.createdDate = Instant.now();
+        this.userId = request.getUserId();
+    }
+
+    public Item(ItemRequest request,Instant updateDate){
+        this.id = request.getId();
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.updateDetails.add(new UpdateDetails(request.getUserId(),updateDate));
     }
 
     public Item(){
@@ -53,5 +71,13 @@ public class Item {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
     }
 }
