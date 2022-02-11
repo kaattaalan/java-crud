@@ -1,9 +1,12 @@
 package com.quattro.javacrud.controllers;
 
 import com.quattro.javacrud.models.Item;
+import com.quattro.javacrud.models.ItemInfo;
 import com.quattro.javacrud.models.UpdateDetails;
+import com.quattro.javacrud.models.UserInfo;
 import com.quattro.javacrud.payload.request.ItemRequest;
 import com.quattro.javacrud.repository.Itemrepository;
+import com.quattro.javacrud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +26,12 @@ public class ItemController {
 
     @Autowired
     Itemrepository itemrepository;
+    @Autowired
+    UserRepository userRepository;
 
     @GetMapping("/")
     public ResponseEntity<?> getAllItems(){
-        List<Item> itemList = new ArrayList<Item>();
-        itemrepository.findAll().forEach(itemList::add);
+        List<ItemInfo> itemList = itemrepository.getItemInfoList();
         if(itemList.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -56,14 +60,16 @@ public class ItemController {
 
     @PostMapping("/")
     public ResponseEntity<?> insertItem(@Valid @RequestBody ItemRequest itemRequest){
-        itemrepository.save(new Item(itemRequest));
+        UserInfo userInfo = userRepository.getUserInfoOnly(itemRequest.getUserId());
+        itemrepository.save(new Item(itemRequest,userInfo));
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
     @PutMapping("/")
     public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest) {
         if (itemRequest.getId() != null) {
-            return new ResponseEntity<>(itemrepository.save(new Item(itemRequest,Instant.now())), HttpStatus.OK);
+            itemrepository.addItemUpdate(itemRequest);
+            return new ResponseEntity<>( HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -20,22 +20,15 @@ public class Item {
 
     private Instant createdDate;
 
-    private String userId;
+    private UserInfo userInfo;
 
     private List<UpdateDetails> updateDetails = new ArrayList<>();
 
-    public Item(ItemRequest request) {
+    public Item(ItemRequest request,UserInfo userInfo) {
         this.title = request.getTitle();
         this.description = request.getDescription();
         this.createdDate = Instant.now();
-        this.userId = request.getUserId();
-    }
-
-    public Item(ItemRequest request,Instant updateDate){
-        this.id = request.getId();
-        this.title = request.getTitle();
-        this.description = request.getDescription();
-        this.updateDetails.add(new UpdateDetails(request.getUserId(),updateDate));
+        this.userInfo = userInfo;
     }
 
     public Item(){
@@ -65,14 +58,6 @@ public class Item {
         this.description = description;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public Instant getCreatedDate() {
         return createdDate;
     }
@@ -80,4 +65,17 @@ public class Item {
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
+
+    public List<UpdateDetails> getUpdateDetails() {
+        return updateDetails;
+    }
+
 }

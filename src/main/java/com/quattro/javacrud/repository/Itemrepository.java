@@ -6,9 +6,9 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface Itemrepository extends MongoRepository<Item, String> {
+public interface Itemrepository extends MongoRepository<Item, String>, CustomizedItemRepo {
 
-    @Query("{ 'title' : { $regex: ?0 } }")
+    @Query(value = "{ 'title' : { $regex: ?0 } }", fields = "{'id': 1,'title' : 1}")
     List<Item> findItemsByRegexpTitle(String regexp);
 
 }
