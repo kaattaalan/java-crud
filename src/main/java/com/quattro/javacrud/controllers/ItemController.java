@@ -1,6 +1,5 @@
 package com.quattro.javacrud.controllers;
 
-import com.quattro.javacrud.models.ERole;
 import com.quattro.javacrud.models.Item;
 import com.quattro.javacrud.models.ItemInfo;
 import com.quattro.javacrud.models.UserInfo;
@@ -8,16 +7,13 @@ import com.quattro.javacrud.payload.request.ItemRequest;
 import com.quattro.javacrud.repository.Itemrepository;
 import com.quattro.javacrud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,13 +63,16 @@ public class ItemController {
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
 
+    /**
+     * @param itemRequest
+     * @return
+     * Method previously used userId obtained by this : @CurrentSecurityContext(expression="authentication?.principal?.id") String userId
+     * to determine whether user was able to edit the resource
+     */
     @PutMapping("/")
-    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest
-            , @CurrentSecurityContext(expression="authentication?.principal?.id") String userId) {
+    @PreAuthorize("@customizedItemRepoImpl.isItemCreatedByUser(authentication?.principal.id,#itemRequest.id) or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest) {
         if (itemRequest.getId() != null) {
-            if(!itemrepository.isItemCreatedByUser(itemRequest.getId(),userId)) {
-                return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
-            }
             itemrepository.addItemUpdate(itemRequest);
             return new ResponseEntity<>( HttpStatus.OK);
         } else {
@@ -82,12 +81,9 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItemById(@PathVariable("id") String id
-            ,@CurrentSecurityContext(expression="authentication?.principal?.id") String userId) {
+    @PreAuthorize("@customizedItemRepoImpl.isItemCreatedByUser(authentication?.principal.id,#id) or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteItemById(@PathVariable("id") String id) {
         try {
-            if(!itemrepository.isItemCreatedByUser(id,userId)) {
-                return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
-            }
             itemrepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
