@@ -11,4 +11,6 @@ public interface CustomizedItemRepo {
 
     public List<ItemInfo> getItemInfoList();
 
+    public Boolean isItemCreatedByUser(String itemId, String userId);
+
 }

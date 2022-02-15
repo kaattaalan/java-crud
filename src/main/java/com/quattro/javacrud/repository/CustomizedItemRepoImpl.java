@@ -35,4 +35,11 @@ public class CustomizedItemRepoImpl implements CustomizedItemRepo {
         return mongoTemplate.findAll(ItemInfo.class);
     }
 
+    @Override
+    public Boolean isItemCreatedByUser(String itemId, String userId) {
+        Criteria criteria = Criteria.where("id").is(itemId).and("userInfo.id").is(userId);
+        Query query = new Query(criteria);
+        return mongoTemplate.exists(query,Item.class);
+    }
+
 }

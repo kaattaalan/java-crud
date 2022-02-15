@@ -1,21 +1,23 @@
 package com.quattro.javacrud.controllers;
 
+import com.quattro.javacrud.models.ERole;
 import com.quattro.javacrud.models.Item;
 import com.quattro.javacrud.models.ItemInfo;
-import com.quattro.javacrud.models.UpdateDetails;
 import com.quattro.javacrud.models.UserInfo;
 import com.quattro.javacrud.payload.request.ItemRequest;
 import com.quattro.javacrud.repository.Itemrepository;
 import com.quattro.javacrud.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.Instant;
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,8 +68,12 @@ public class ItemController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest) {
+    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest
+            , @CurrentSecurityContext(expression="authentication?.principal?.id") String userId) {
         if (itemRequest.getId() != null) {
+            if(!itemrepository.isItemCreatedByUser(itemRequest.getId(),userId)) {
+                return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
+            }
             itemrepository.addItemUpdate(itemRequest);
             return new ResponseEntity<>( HttpStatus.OK);
         } else {
@@ -76,8 +82,12 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItemById(@PathVariable("id") String id) {
+    public ResponseEntity<?> deleteItemById(@PathVariable("id") String id
+            ,@CurrentSecurityContext(expression="authentication?.principal?.id") String userId) {
         try {
+            if(!itemrepository.isItemCreatedByUser(id,userId)) {
+                return new ResponseEntity<>( HttpStatus.UNAUTHORIZED);
+            }
             itemrepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
