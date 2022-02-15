@@ -24,6 +24,8 @@ public class Item {
 
     private List<UpdateDetails> updateDetails = new ArrayList<>();
 
+    private ItemMetaData metaData = new ItemMetaData();
+
     public Item(ItemRequest request,UserInfo userInfo) {
         this.title = request.getTitle();
         this.description = request.getDescription();
@@ -78,4 +80,11 @@ public class Item {
         return updateDetails;
     }
 
+    public ItemMetaData getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(ItemMetaData metaData) {
+        this.metaData = metaData;
+    }
 }

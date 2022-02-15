@@ -5,17 +5,17 @@ import com.quattro.javacrud.models.ItemInfo;
 import com.quattro.javacrud.models.UpdateDetails;
 import com.quattro.javacrud.payload.request.ItemRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
 
-@Component("customizedItemRepoImpl")
+@Repository
 public class CustomizedItemRepoImpl implements CustomizedItemRepo {
 
     @Autowired
@@ -47,6 +47,20 @@ public class CustomizedItemRepoImpl implements CustomizedItemRepo {
         Criteria criteria = Criteria.where("id").is(itemId).and("userInfo.id").is(userId);
         Query query = new Query(criteria);
         return mongoTemplate.exists(query,Item.class);
+    }
+
+    @Override
+    public Item incrementViewAndReturn(String id) {
+        Query query = new Query(Criteria.where("id").is(id));
+        Update update = new Update().inc("metaData.viewCount", 1);
+        return mongoTemplate.findAndModify(query, update, FindAndModifyOptions.options().returnNew(true), Item.class);
+    }
+
+    @Override
+    public void updateVotes(String id, Integer val) {
+        Query query = new Query(Criteria.where("id").is(id));
+        Update update = new Update().inc("metaData.votes", val);
+        mongoTemplate.upsert(query,update,Item.class);
     }
 
 }
