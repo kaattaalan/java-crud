@@ -40,7 +40,6 @@ public class CustomizedItemRepoImpl implements CustomizedItemRepo {
 
     /**
      * Checks whether the Item belongs to the user
-     *
      * @param userId
      * @param itemId
      * @return

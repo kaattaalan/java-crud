@@ -53,7 +53,8 @@ public class ItemController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> insertItem(@Valid @RequestBody ItemRequest itemRequest) {
+    public ResponseEntity<?> insertItem(@Valid @RequestBody ItemRequest itemRequest,@CurrentSecurityContext(expression = "authentication?.principal?.id") String userId) {
+        itemRequest.setUserId(userId);
         itemService.insertItem(itemRequest);
         return new ResponseEntity<>(null, HttpStatus.CREATED);
     }
@@ -63,8 +64,9 @@ public class ItemController {
      * @return
      */
     @PutMapping("/")
-    @PreAuthorize("@itemServiceImpl.isUserPermitted(authentication?.principal.id,#itemRequest.id) or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest) {
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or @itemServiceImpl.isUserPermitted(authentication?.principal.id,#itemRequest.id)")
+    public ResponseEntity<Item> updateItem(@RequestBody ItemRequest itemRequest,@CurrentSecurityContext(expression = "authentication?.principal?.id") String userId) {
+        itemRequest.setUserId(userId);
         if (itemRequest.getId() != null) {
             itemService.updateItem(itemRequest);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -74,7 +76,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("@itemServiceImpl.isUserPermitted(authentication?.principal.id,#id) or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or @itemServiceImpl.isUserPermitted(authentication?.principal.id,#id)")
     public ResponseEntity<?> deleteItemById(@PathVariable("id") String id) {
         try {
             itemService.deleteById(id);

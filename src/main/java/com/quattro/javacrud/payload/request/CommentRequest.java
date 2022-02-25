@@ -2,13 +2,15 @@ package com.quattro.javacrud.payload.request;
 
 import javax.validation.constraints.NotBlank;
 
-public class ItemRequest extends CommonRequest {
+public class CommentRequest extends CommonRequest {
 
     @NotBlank
     private String title;
 
     @NotBlank
     private String description;
+
+    private String itemId;
 
     public String getTitle() {
         return title;
@@ -26,4 +28,11 @@ public class ItemRequest extends CommonRequest {
         this.description = description;
     }
 
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
 }
