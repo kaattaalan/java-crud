@@ -1,14 +1,18 @@
 package com.quattro.javacrud.models;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ItemMetaData {
 
     private Integer viewCount;
 
-    private Integer votes;
+    private Set<String> upVoted = new HashSet<>();
+
+    private Set<String> downVoted = new HashSet<>();
 
     public ItemMetaData() {
         this.viewCount = 0;
-        this.votes = 0;
     }
 
     public Integer getViewCount() {
@@ -19,11 +23,4 @@ public class ItemMetaData {
         this.viewCount = viewCount;
     }
 
-    public Integer getVotes() {
-        return votes;
-    }
-
-    public void setVotes(Integer votes) {
-        this.votes = votes;
-    }
 }

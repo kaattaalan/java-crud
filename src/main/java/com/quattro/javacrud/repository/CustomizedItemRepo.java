@@ -16,6 +16,14 @@ public interface CustomizedItemRepo {
 
     Item incrementViewAndReturn(String id);
 
-    void updateVotes(String id, Integer val);
+    void registerUpVote(String itemId,String userId);
+
+    void registerDownVote(String itemId,String userId);
+
+    Integer getVoteCount(String itemId);
+
+    void softDeleteById(String itemId);
+
+    void softDeleteAll();
 
 }

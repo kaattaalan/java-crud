@@ -1,5 +1,6 @@
 package com.quattro.javacrud.controllers;
 
+import com.quattro.javacrud.models.EVote;
 import com.quattro.javacrud.models.Item;
 import com.quattro.javacrud.models.ItemInfo;
 import com.quattro.javacrud.payload.request.ItemRequest;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,8 +60,7 @@ public class ItemController {
 
     /**
      * @param itemRequest
-     * @return Method previously used userId obtained by this : @CurrentSecurityContext(expression="authentication?.principal?.id") String userId
-     * to determine whether user was able to edit the resource
+     * @return
      */
     @PutMapping("/")
     @PreAuthorize("@itemServiceImpl.isUserPermitted(authentication?.principal.id,#itemRequest.id) or hasRole('MODERATOR') or hasRole('ADMIN')")
@@ -92,6 +93,19 @@ public class ItemController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PutMapping("/vote/{item_id}/{vote}")
+    public ResponseEntity<?> registerVote(@PathVariable("item_id") String itemId, @PathVariable("vote") EVote vote
+            , @CurrentSecurityContext(expression = "authentication?.principal?.id") String userId) {
+        itemService.registerVote(itemId,userId,vote);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/vote/{item_id}")
+    public ResponseEntity<?> registerVote(@PathVariable("item_id") String itemId) {
+        Integer voteCount = itemService.getVoteCount(itemId);
+        return new ResponseEntity<>(voteCount, HttpStatus.OK);
     }
 
 }

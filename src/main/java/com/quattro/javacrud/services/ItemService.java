@@ -1,5 +1,6 @@
 package com.quattro.javacrud.services;
 
+import com.quattro.javacrud.models.EVote;
 import com.quattro.javacrud.models.Item;
 import com.quattro.javacrud.models.ItemInfo;
 import com.quattro.javacrud.payload.request.ItemRequest;
@@ -26,8 +27,8 @@ public interface ItemService {
 
     Item updateViewAndFind(String id);
 
-    void registerUpvote(String id);
+    void registerVote(String itemId, String userId, EVote vote);
 
-    void registerDownVote(String id);
+    Integer getVoteCount(String itemId);
 
 }

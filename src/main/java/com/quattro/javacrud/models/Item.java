@@ -26,11 +26,14 @@ public class Item {
 
     private ItemMetaData metaData = new ItemMetaData();
 
+    private Boolean deleted;
+
     public Item(ItemRequest request,UserInfo userInfo) {
         this.title = request.getTitle();
         this.description = request.getDescription();
         this.createdDate = Instant.now();
         this.userInfo = userInfo;
+        this.deleted = false;
     }
 
     public Item(){

@@ -1,8 +1,6 @@
 package com.quattro.javacrud.services;
 
-import com.quattro.javacrud.models.Item;
-import com.quattro.javacrud.models.ItemInfo;
-import com.quattro.javacrud.models.UserInfo;
+import com.quattro.javacrud.models.*;
 import com.quattro.javacrud.payload.request.ItemRequest;
 import com.quattro.javacrud.repository.Itemrepository;
 import com.quattro.javacrud.repository.UserRepository;
@@ -57,12 +55,12 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public void deleteById(String id) {
-        itemrepository.deleteById(id);
+        itemrepository.softDeleteById(id);
     }
 
     @Override
     public void deleteAllItems() {
-        itemrepository.deleteAll();
+        itemrepository.softDeleteAll();
     }
 
     @Override
@@ -75,13 +73,21 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void registerUpvote(String id) {
-        itemrepository.updateVotes(id,1);
+    public void registerVote(String itemId, String userId, EVote voteType) {
+        switch (voteType){
+            case UP:
+                itemrepository.registerUpVote(itemId,userId);
+                break;
+            case DOWN:
+                itemrepository.registerDownVote(itemId,userId);
+                break;
+        }
     }
 
     @Override
-    public void registerDownVote(String id) {
-        itemrepository.updateVotes(id,-1);
+    public Integer getVoteCount(String itemId) {
+        return itemrepository.getVoteCount(itemId);
     }
+
 
 }

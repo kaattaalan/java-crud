@@ -3,17 +3,23 @@ package com.quattro.javacrud.models;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
+
 @Document(collection = "comments")
 public class Comment {
 
     @Id
     private String id;
 
+    private String userId;
+
+    private String itemId;
+
     private String title;
 
     private String description;
 
-    private String itemId;
+    private Instant createdDate;
 
     public String getId() {
         return id;
@@ -45,5 +51,21 @@ public class Comment {
 
     public void setItemId(String itemId) {
         this.itemId = itemId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
     }
 }
