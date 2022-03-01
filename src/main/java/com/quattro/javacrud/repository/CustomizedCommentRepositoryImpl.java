@@ -20,7 +20,7 @@ public class CustomizedCommentRepositoryImpl implements CustomizedCommentReposit
 
     @Override
     public Boolean isCommentCreatedByUser(String userId, String commentId) {
-        Criteria criteria = Criteria.where("id").is(commentId).and("userId").is(userId);
+        Criteria criteria = Criteria.where("id").is(commentId).and("userInfo.id").is(userId);
         Query query = new Query(criteria);
         return mongoTemplate.exists(query, Comment.class);
     }
@@ -30,7 +30,7 @@ public class CustomizedCommentRepositoryImpl implements CustomizedCommentReposit
         Criteria isNotDeleted = new Criteria().orOperator(Criteria.where("deleted").exists(false),Criteria.where("deleted").is(false));
         Criteria isItemId = Criteria.where("itemId").is(commentId);
         Query query = new Query(new Criteria().andOperator(isItemId,isNotDeleted));
-        query.fields().include("id", "title", "description", "createdDate");
+        query.fields().include("id", "title", "description", "createdDate","userInfo");
         return mongoTemplate.find(query, CommentResponse.class);
     }
 

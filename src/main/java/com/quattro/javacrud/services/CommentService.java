@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CommentService {
 
-    void insertComment(CommentRequest commentRequest);
+    Comment insertComment(CommentRequest commentRequest);
 
     void updateComment(CommentRequest commentRequest);
 

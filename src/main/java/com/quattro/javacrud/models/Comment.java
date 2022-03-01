@@ -2,6 +2,7 @@ package com.quattro.javacrud.models;
 
 import com.quattro.javacrud.payload.request.CommentRequest;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -12,7 +13,8 @@ public class Comment {
     @Id
     private String id;
 
-    private String userId;
+    @DBRef
+    private UserInfo userInfo;
 
     private String itemId;
 
@@ -29,10 +31,11 @@ public class Comment {
     }
 
     public Comment(CommentRequest request) {
+        this.userInfo = new UserInfo();
         this.title = request.getTitle();
         this.description = request.getDescription();
         this.createdDate = Instant.now();
-        this.userId = request.getUserId();
+        this.userInfo.setId(request.getUserId());
         this.itemId = request.getItemId();
         this.deleted = false;
     }
@@ -68,12 +71,12 @@ public class Comment {
         this.itemId = itemId;
     }
 
-    public String getUserId() {
-        return userId;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
     public Instant getCreatedDate() {

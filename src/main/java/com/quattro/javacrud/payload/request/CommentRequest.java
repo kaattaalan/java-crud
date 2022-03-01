@@ -4,7 +4,6 @@ import javax.validation.constraints.NotBlank;
 
 public class CommentRequest extends CommonRequest {
 
-    @NotBlank
     private String title;
 
     @NotBlank

@@ -44,8 +44,8 @@ public class CommentController {
     @PostMapping("/")
     public ResponseEntity<?> insertComment(@Valid @RequestBody CommentRequest commentRequest ,@CurrentSecurityContext(expression = "authentication?.principal?.id") String userId) {
         commentRequest.setUserId(userId);
-        commentService.insertComment(commentRequest);
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
+        Comment comment = commentService.insertComment(commentRequest);
+        return new ResponseEntity<>(new CommentResponse(comment), HttpStatus.CREATED);
     }
 
     @PutMapping("/")

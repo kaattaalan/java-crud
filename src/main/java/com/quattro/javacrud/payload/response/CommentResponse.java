@@ -1,5 +1,7 @@
 package com.quattro.javacrud.payload.response;
 
+import com.quattro.javacrud.models.Comment;
+import com.quattro.javacrud.models.UserInfo;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -14,6 +16,19 @@ public class CommentResponse {
     private String description;
 
     private Instant createdDate;
+
+    private UserInfo userInfo;
+
+    public CommentResponse(Comment comment) {
+        this.id = comment.getId();
+        this.title = comment.getTitle();
+        this.description = comment.getDescription();
+        this.createdDate = comment.getCreatedDate();
+        this.userInfo = comment.getUserInfo();
+    }
+
+    public CommentResponse() {
+    }
 
     public String getId() {
         return id;
@@ -45,5 +60,13 @@ public class CommentResponse {
 
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 }
